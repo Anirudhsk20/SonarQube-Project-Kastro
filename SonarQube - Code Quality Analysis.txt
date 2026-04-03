@@ -10,7 +10,9 @@ Step 3: sudo apt update
 
 Step 4: Lets setup Jenkins
 $ sudo apt install openjdk-17-jre-headless -y
-
+----------------------------Start
+FOR LINUX- sudo yum install java-17-amazon-corretto -y
+----------------------------End
 The below commands can be found in; https://www.jenkins.io/doc/book/installing/linux/#debianubuntu
 
 sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
@@ -20,11 +22,25 @@ echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt-get update
 sudo apt-get install jenkins -y
-
+---------------------------------Start
+FOR LINUX
+#!/bin/bash
+# Install Java
+sudo yum install java-17-amazon-corretto -y
+# Add Jenkins repo
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+https://pkg.jenkins.io/redhat-stable/jenkins.repo
+# Import key
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+# Install Jenkins
+sudo yum install jenkins -y
+# Start Jenkins
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
 vi j.sh
 <Paste the above commands>
-
 esc --- :wq
+---------------------------------End
 
 Lets give the permission to j.sh file to execute; sudo chmod +x j.sh
 ls --- you can see 'j.sh' in green colour
@@ -41,7 +57,20 @@ Access Jenkins; <publicip>:8080 ---> Setup the Jenkins dashboard by following th
 Step 5: SonarQube Setup
 # Lets setup sonar server using Docker (this is the simplest way)
 $ sudo apt install docker.io
+FOR NEXUS-------------------start
+sudo yum install docker -y
+# Add user to docker group (instead of chmod 666)
+sudo usermod -aG docker ec2-user
+exit
+sudo systemctl start docker
+sudo systemctl enable docker
 
+# After login again
+docker run -d --name sonarqube -p 9000:9000 --restart unless-stopped sonarqube:lts-community
+
+docker ps
+docker logs sonarqube
+------------------------------End
 #Lets give permissions to run docker
 $ sudo chmod 666 /var/run/docker.sock
 
